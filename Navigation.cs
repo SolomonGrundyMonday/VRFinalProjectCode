@@ -10,6 +10,7 @@ public class Navigation : MonoBehaviour
     private const float mouseSensitivityY = 15.0f;
     private const float moveSpeed = 0.1f;
     private GameObject rig;
+    private CharacterController controller;
 
     // Start is called before the first frame update
     void Start()
@@ -24,52 +25,32 @@ public class Navigation : MonoBehaviour
         // If user presses 'W' key, move forward.
         if (Input.GetKey(KeyCode.W))
         {
-            // Compute new x, z coordinates
-            float x = rig.transform.position.x - ((float)Math.Sin(rig.transform.rotation.y) * moveSpeed);
-            float z = rig.transform.position.z - ((float)-Math.Cos(rig.transform.rotation.y) * moveSpeed);
-
-            // Set Camera rig new position based on computed coordinates.
-            Vector3 newPos = new Vector3(x, rig.transform.position.y, z);
-            rig.transform.SetPositionAndRotation(newPos, rig.transform.rotation);
+            // Translate Camera rig forward by a factor of moveSpeed.
+            rig.transform.Translate(Vector3.forward * moveSpeed);
         }
         // If user presses 'S' key, move backward.
         else if (Input.GetKey(KeyCode.S))
         {
-            // Compute new x, z coordinates.
-            float x = rig.transform.position.x + ((float)Math.Sin(rig.transform.rotation.y) * moveSpeed);
-            float z = rig.transform.position.z + ((float)-Math.Cos(rig.transform.rotation.y) * moveSpeed);
-
-            // Set Camera rig new position based on computed coordinates.
-            Vector3 newPos = new Vector3(x, rig.transform.position.y, z);
-            rig.transform.SetPositionAndRotation(newPos, rig.transform.rotation);
+            // Translate Camera rig backward by a factor of moveSpeed.
+            rig.transform.Translate(Vector3.back * moveSpeed);
         }
-        // If user presses 'D' key, strafe right.
-        else if (Input.GetKey(KeyCode.D))
-        {
-            // Compute new x, z coordinates.
-            float x = rig.transform.position.x + ((float)Math.Cos(rig.transform.rotation.y) * moveSpeed);
-            float z = rig.transform.position.z + ((float)Math.Sin(rig.transform.rotation.y) * moveSpeed);
-
-            // Set Camera rig new position based on computed coordinates.
-            Vector3 newPos = new Vector3(x, rig.transform.position.y, z);
-            rig.transform.SetPositionAndRotation(newPos, rig.transform.rotation);
-        }
-        // If user presses 'A' key, strafe left.
+        // If user presses 'A' key, strafe right.
         else if (Input.GetKey(KeyCode.A))
         {
-            // Compute new x, z coordinates.
-            float x = rig.transform.position.x - ((float)Math.Cos(rig.transform.rotation.y) * moveSpeed);
-            float z = rig.transform.position.z - ((float)Math.Sin(rig.transform.rotation.y) * moveSpeed);
-
-            // Set Camera rig new position based on computed coordinates.
-            Vector3 newPos = new Vector3(x, rig.transform.position.y, z);
-            rig.transform.SetPositionAndRotation(newPos, rig.transform.rotation);
+            // Translate Camera rig left by a factor of moveSpeed.
+            rig.transform.Translate(Vector3.left * moveSpeed);
+        }
+        // If user presses 'D' key, strafe left.
+        else if (Input.GetKey(KeyCode.D))
+        {
+            // Translate Camera rig right by a factor of moveSpeed.
+            rig.transform.Translate(Vector3.right * moveSpeed);
         }
 
         // Mouse movement loosely based on code at: https://answers.unity.com/questions/29741/mouse-look-script.html
         // Get mouse movement along x, y axes.
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivityX;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivityY;
+        float mouseY = 0.0f;// Input.GetAxis("Mouse Y") * mouseSensitivityY;
 
         // If mouse movement along both x, y axes.
         if (mouseX != 0 && mouseY != 0)
