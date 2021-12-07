@@ -17,11 +17,16 @@ public class Navigation : MonoBehaviour
     {
         // Find Camera rig on startup - optimization GameObject.Find is presumably computationally expensive.
         rig = GameObject.Find("Main Camera");
+        Rigidbody rigidBody = rig.GetComponent<Rigidbody>();
+        rigidBody.freezeRotation = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        float y = rig.transform.position.y;
+
         // If user presses 'W' key, move forward.
         if (Input.GetKey(KeyCode.W))
         {
@@ -47,27 +52,19 @@ public class Navigation : MonoBehaviour
             rig.transform.Translate(Vector3.right * moveSpeed);
         }
 
+        float x = rig.transform.position.x;
+        float z = rig.transform.position.z;
+        Vector3 pos = new Vector3(x, y, z);
+
+        rig.transform.SetPositionAndRotation(pos, rig.transform.rotation);
+
         // Mouse movement loosely based on code at: https://answers.unity.com/questions/29741/mouse-look-script.html
         // Get mouse movement along x, y axes.
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivityX;
-        float mouseY = 0.0f;// Input.GetAxis("Mouse Y") * mouseSensitivityY;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivityY;
 
-        // If mouse movement along both x, y axes.
-        if (mouseX != 0 && mouseY != 0)
-        {
-            // Limit x-axis angle to +/- 360 degrees and y-axis angle to +/- 60 degrees.
-            mouseX %= 360;
-            mouseY %= 60;
-
-            // Compute x-axis quaternion based on up vector and y-axis quaternion based on left vector.
-            Quaternion xQuaternion = Quaternion.AngleAxis(mouseX, Vector3.up);
-            Quaternion yQuaternion = Quaternion.AngleAxis(mouseY, Vector3.left);
-
-            // Set new rotation by multiplying original rotation quaternion by xQuaternion then yQuaternion.
-            rig.transform.SetPositionAndRotation(rig.transform.position, rig.transform.rotation * xQuaternion * yQuaternion);
-        }
-        // If mouse movement along x-axis only.
-        else if (mouseX != 0 && mouseY == 0)
+        // If mouse movement along x-axis.
+        if (mouseX != 0)
         {
             // Limit x-axis angle to +/- 360 degrees.
             mouseX %= 360;
@@ -76,10 +73,10 @@ public class Navigation : MonoBehaviour
             Quaternion xQuaternion = Quaternion.AngleAxis(mouseX, Vector3.up);
 
             // Set new rotation by multiplying original rotation quaternion by xQuaternion.
-            rig.transform.SetPositionAndRotation(rig.transform.position, rig.transform.rotation * xQuaternion);
+            rig.transform.localRotation = rig.transform.localRotation * xQuaternion;
         }
-        // If mouse movement along y-axis only.
-        else if (mouseX == 0 && mouseY != 0)
+        // If mouse movement along y-axis.
+        if (mouseY != 0)
         {
             // Limit y-axis angle to +/- 60 degrees.
             mouseY %= 60;
@@ -88,7 +85,7 @@ public class Navigation : MonoBehaviour
             Quaternion yQuaternion = Quaternion.AngleAxis(mouseY, Vector3.left);
 
             // Set new rotation by multiplying original rotation quaternion by yQuaternion.
-            rig.transform.SetPositionAndRotation(rig.transform.position, rig.transform.rotation * yQuaternion);
+            rig.transform.localRotation = rig.transform.localRotation * yQuaternion;
         }
     }
 }
