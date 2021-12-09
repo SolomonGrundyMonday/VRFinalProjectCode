@@ -20,7 +20,7 @@ public class MouseLook : MonoBehaviour
 	void Start()
 	{
         // Get the Capsule's rigid body component (if it exists).
-        rig = GameObject.Find("Capsule");
+        rig = GameObject.Find("Player");
         Rigidbody body = rig.GetComponent<Rigidbody>();
         if (body)
             body.freezeRotation = true;
@@ -32,54 +32,58 @@ public class MouseLook : MonoBehaviour
     // MouseLook implementation borrowed from https://answers.unity.com/questions/29741/mouse-look-script.html.
     void Update()
     {
-        // If the Mouse look script is using both x, y axes.
-        if (axes == RotationAxes.MouseXAndY)
+        if (!Input.GetKey(KeyCode.Mouse1))
         {
-            // Add the delta x, y mouse input and add it to the x, y rotation components.
-            rotX += Input.GetAxis("Mouse X") * xSensitivity;
-            rotY += Input.GetAxis("Mouse Y") * ySensitivity;
 
-            // Keep x rotation within [-360,360] and y-rotation within [-60,60].
-            if (rotX >= 360f)
-                rotX -= 360f;
-            else if (rotX <= -360f)
-                rotX += 360f;
+            // If the Mouse look script is using both x, y axes.
+            if (axes == RotationAxes.MouseXAndY)
+            {
+                // Add the delta x, y mouse input and add it to the x, y rotation components.
+                rotX += Input.GetAxis("Mouse X") * xSensitivity;
+                rotY += Input.GetAxis("Mouse Y") * ySensitivity;
 
-            rotY = Mathf.Clamp(rotY, -60f, 60f);
+                // Keep x rotation within [-360,360] and y-rotation within [-60,60].
+                if (rotX >= 360f)
+                    rotX -= 360f;
+                else if (rotX <= -360f)
+                    rotX += 360f;
 
-            // Get quaternion for x-axis based on the up vector and y-quaternion based on the left vector.
-            Quaternion xQuaternion = Quaternion.AngleAxis(rotX, Vector3.up);
-            Quaternion yQuaternion = Quaternion.AngleAxis(rotY, Vector3.left);
+                rotY = Mathf.Clamp(rotY, -60f, 60f);
 
-            // Apply x, y rotations to the original rotation.
-            transform.localRotation = originalRotation * xQuaternion * yQuaternion;
-        }
-        // If the MouseLook script is using x-axis only.
-        else if (axes == RotationAxes.MouseX)
-        {
-            // Add the delta x mouse input and add it to the x rotation component.
-            rotX += Input.GetAxis("Mouse X") * xSensitivity;
+                // Get quaternion for x-axis based on the up vector and y-quaternion based on the left vector.
+                Quaternion xQuaternion = Quaternion.AngleAxis(rotX, Vector3.up);
+                Quaternion yQuaternion = Quaternion.AngleAxis(rotY, Vector3.left);
 
-            // Keep x rotation within [-360,360].
-            if (rotX >= 360f)
-                rotX -= 360f;
-            else if (rotX <= -360f)
-                rotX += 360f;
+                // Apply x, y rotations to the original rotation.
+                transform.localRotation = originalRotation * xQuaternion * yQuaternion;
+            }
+            // If the MouseLook script is using x-axis only.
+            else if (axes == RotationAxes.MouseX)
+            {
+                // Add the delta x mouse input and add it to the x rotation component.
+                rotX += Input.GetAxis("Mouse X") * xSensitivity;
 
-            // Get Quaternion for x-axis based on up vector and apply x rotation to the original rotation.
-            Quaternion xQuaternion = Quaternion.AngleAxis(rotX, Vector3.up);
-            transform.localRotation = originalRotation * xQuaternion;
-        }
-        // If the MouseLook script is using y-axis only.
-        else
-        {
-            // Add the delta y mouse input and add it to the y rotation component.
-            rotY += Input.GetAxis("Mouse Y") * ySensitivity;
-            rotY = Mathf.Clamp(rotY, -60f, 60f);
+                // Keep x rotation within [-360,360].
+                if (rotX >= 360f)
+                    rotX -= 360f;
+                else if (rotX <= -360f)
+                    rotX += 360f;
 
-            // Get Quaternion for y-axis based on left vector and apply y rotaiton to the original rotation.
-            Quaternion yQuaternion = Quaternion.AngleAxis(rotY, Vector3.left);
-            transform.localRotation = originalRotation * yQuaternion;
+                // Get Quaternion for x-axis based on up vector and apply x rotation to the original rotation.
+                Quaternion xQuaternion = Quaternion.AngleAxis(rotX, Vector3.up);
+                transform.localRotation = originalRotation * xQuaternion;
+            }
+            // If the MouseLook script is using y-axis only.
+            else
+            {
+                // Add the delta y mouse input and add it to the y rotation component.
+                rotY += Input.GetAxis("Mouse Y") * ySensitivity;
+                rotY = Mathf.Clamp(rotY, -60f, 60f);
+
+                // Get Quaternion for y-axis based on left vector and apply y rotaiton to the original rotation.
+                Quaternion yQuaternion = Quaternion.AngleAxis(rotY, Vector3.left);
+                transform.localRotation = originalRotation * yQuaternion;
+            }
         }
     }
 }

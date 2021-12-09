@@ -15,7 +15,7 @@ public class Navigation : MonoBehaviour
     void Start()
     {
         // Find Camera rig on startup - optimization GameObject.Find is presumably computationally expensive.
-        rig = GameObject.Find("Capsule");
+        rig = GameObject.Find("Player");
     }
 
     // Update is called once per frame
