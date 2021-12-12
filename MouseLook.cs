@@ -10,8 +10,8 @@ public class MouseLook : MonoBehaviour
     public RotationAxes axes = RotationAxes.MouseXAndY;
 
     // Private properties for MouseLook script.
-    private const float xSensitivity = 15.0f;
-    private const float ySensitivity = 15.0f;
+    private const float xSensitivity = 10.0f;
+    private const float ySensitivity = 10.0f;
     private float rotX = 0f;
     private float rotY = 0f;
     private GameObject rig;
